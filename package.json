@@ -12,7 +12,7 @@
     "package": "ncc build --source-map --license licenses.txt",
     "test": "jest",
     "all": "npm run build && npm run format && npm run lint && npm run package && npm test",
-    "go": "npm run build && npm run package && git aa && git ci"
+    "go": "npm run build && npm run package && git aa && git ci && git push"
   },
   "repository": {
     "type": "git",
