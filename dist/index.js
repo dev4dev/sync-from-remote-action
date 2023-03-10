@@ -44,7 +44,7 @@ const exec = __importStar(__nccwpck_require__(1514));
 // import * as core from '@actions/core'
 function getRemoteVersion(repo) {
     return __awaiter(this, void 0, void 0, function* () {
-        return execPromise(`git ls-remote --tags --sort="-v:refname" ${repo} | grep -P "refs\\/tags\\/v?\\d+\\.\\d+\\.\\d+$"` // | head -n 1 | awk "{print $2}" | awk -F/ "{print $NF}"`
+        return execPromise(`git ls-remote --tags --sort="-v:refname" ${repo} | grep "refs"` // | head -n 1 | awk "{print $2}" | awk -F/ "{print $NF}"`
         );
     });
 }
