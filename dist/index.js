@@ -126,7 +126,9 @@ function run() {
             const source = core.getInput('source');
             // const githubToken = process.env['GITHUB_TOKEN'] as string
             // const octokit = github.getOctokit(githubToken)
-            core.info(`${process_1.env}`);
+            for (const [key, value] of Object.entries(process_1.env)) {
+                core.info(`${key}: ${value}`);
+            }
             // core.info(`${octokit}, ${source}`)
             // 0. Clone current repo
             // 1. Get remote version

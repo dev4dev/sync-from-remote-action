@@ -9,7 +9,9 @@ async function run(): Promise<void> {
     const source: string = core.getInput('source')
     // const githubToken = process.env['GITHUB_TOKEN'] as string
     // const octokit = github.getOctokit(githubToken)
-    core.info(`${env}`)
+    for (const [key, value] of Object.entries(env)) {
+      core.info(`${key}: ${value}`)
+    }
 
     // core.info(`${octokit}, ${source}`)
 
