@@ -6,10 +6,10 @@ async function run(): Promise<void> {
   try {
     const source: string = core.getInput('source')
 
-    core.debug(`Syncing with the remote repo ${source}`)
-    core.debug(github.context.repo.repo)
-
-    console.log('Test nessage')
+    core.startGroup('Test Group')
+    core.info(`Syncing with the remote repo ${source}`)
+    core.info(github.context.repo.repo)
+    core.endGroup()
 
     core.setOutput('result', 'synced')
   } catch (error) {
