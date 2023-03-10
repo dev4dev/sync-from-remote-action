@@ -1,4 +1,5 @@
 import * as exec from '@actions/exec'
+import * as core from '@actions/core'
 
 export async function getRemoteVersion(repo: string): Promise<string> {
   return execPromise(
@@ -15,10 +16,15 @@ async function execPromise(command: string): Promise<string> {
     exec.exec(command, [], {
       listeners: {
         stdout: data => {
+          core.info(`stdout: ${data.toString('utf8')}`)
           resolve(data.toString())
         },
         stderr: data => {
+          core.info(`error: ${data.toString('utf8')}`)
           reject(data.toString())
+        },
+        stdline(data) {
+          core.info(`stdline: ${data}`)
         }
       }
     })

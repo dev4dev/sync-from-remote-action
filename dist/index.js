@@ -41,6 +41,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getLocalVersion = exports.getRemoteVersion = void 0;
 const exec = __importStar(__nccwpck_require__(514));
+const core = __importStar(__nccwpck_require__(186));
 function getRemoteVersion(repo) {
     return __awaiter(this, void 0, void 0, function* () {
         return execPromise(`git ls-remote --tags --sort="-v:refname" ${repo} | grep -P "refs/tags/v?\\d+.\\d+.\\d+$" | head -n 1 | awk "{print $2}" | awk -F/ "{print $NF}"`);
@@ -57,10 +58,15 @@ function execPromise(command) {
             exec.exec(command, [], {
                 listeners: {
                     stdout: data => {
+                        core.info(`stdout: ${data.toString('utf8')}`);
                         resolve(data.toString());
                     },
                     stderr: data => {
+                        core.info(`error: ${data.toString('utf8')}`);
                         reject(data.toString());
+                    },
+                    stdline(data) {
+                        core.info(`stdline: ${data}`);
                     }
                 }
             });
