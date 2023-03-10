@@ -1,12 +1,27 @@
 import * as exec from '@actions/exec'
 // import * as core from '@actions/core'
 
-export async function getRemoteVersion(repo: string): Promise<string> {
-  const versions = execPromise(
+export async function getRemoteVersion(
+  repo: string
+): Promise<string | undefined> {
+  const output = await execPromise(
     `bash -c "git ls-remote --tags --sort='-v:refname' ${repo}`
   )
+  const versions = output.split('\n')
 
-  return versions
+  const matched = versions
+    .filter(line => {
+      const match = line.match(new RegExp('refs/tags/v?\\d+.\\d+.\\d+$'))
+      if (match) {
+        return (match.index ?? 0) > 0
+      } else {
+        return false
+      }
+    })
+    .shift()
+
+  const version = matched?.split(new RegExp('\\s'))?.pop()?.split('/')?.pop()
+  return version
 }
 
 export async function getLocalVersion(): Promise<string> {

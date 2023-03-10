@@ -43,9 +43,24 @@ exports.execPromise = exports.getLocalVersion = exports.getRemoteVersion = void 
 const exec = __importStar(__nccwpck_require__(1514));
 // import * as core from '@actions/core'
 function getRemoteVersion(repo) {
+    var _a, _b, _c;
     return __awaiter(this, void 0, void 0, function* () {
-        const versions = execPromise(`bash -c "git ls-remote --tags --sort='-v:refname' ${repo}`);
-        return versions;
+        const output = yield execPromise(`bash -c "git ls-remote --tags --sort='-v:refname' ${repo}`);
+        const versions = output.split('\n');
+        const matched = versions
+            .filter(line => {
+            var _a;
+            const match = line.match(new RegExp('refs/tags/v?\\d+.\\d+.\\d+$'));
+            if (match) {
+                return ((_a = match.index) !== null && _a !== void 0 ? _a : 0) > 0;
+            }
+            else {
+                return false;
+            }
+        })
+            .shift();
+        const version = (_c = (_b = (_a = matched === null || matched === void 0 ? void 0 : matched.split(new RegExp('\\s'))) === null || _a === void 0 ? void 0 : _a.pop()) === null || _b === void 0 ? void 0 : _b.split('/')) === null || _c === void 0 ? void 0 : _c.pop();
+        return version;
     });
 }
 exports.getRemoteVersion = getRemoteVersion;
