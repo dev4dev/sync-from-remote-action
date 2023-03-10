@@ -14,7 +14,6 @@ import {expect, test} from '@jest/globals'
 //   console.log(cp.execFileSync(np, [ip], options).toString())
 // })
 
-
 test('pass it', () => {
   console.log('ok')
 })
