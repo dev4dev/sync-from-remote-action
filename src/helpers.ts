@@ -11,7 +11,7 @@ export async function getLocalVersion(): Promise<string> {
   return execPromise('git --version')
 }
 
-async function execPromise(command: string): Promise<string> {
+export async function execPromise(command: string): Promise<string> {
   const result = await exec.getExecOutput(command, [])
   return result.stdout
   // return new Promise<string>((resolve, reject) => {

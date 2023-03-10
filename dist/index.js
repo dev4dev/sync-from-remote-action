@@ -39,7 +39,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getLocalVersion = exports.getRemoteVersion = void 0;
+exports.execPromise = exports.getLocalVersion = exports.getRemoteVersion = void 0;
 const exec = __importStar(__nccwpck_require__(1514));
 // import * as core from '@actions/core'
 function getRemoteVersion(repo) {
@@ -78,6 +78,7 @@ function execPromise(command) {
         // })
     });
 }
+exports.execPromise = execPromise;
 
 
 /***/ }),
@@ -134,6 +135,7 @@ function run() {
             //   core.info(`${key}: ${value}`)
             // }
             core.info(`${octokit}, ${source}`);
+            core.info(`grep man, ${(0, helpers_1.execPromise)('man grep')}`);
             core.info(`git ${yield (0, helpers_1.getLocalVersion)()}`);
             // 0. Clone current repo
             // 1. Get remote version

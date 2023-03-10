@@ -1,6 +1,6 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
-import {getRemoteVersion, getLocalVersion} from './helpers'
+import {getRemoteVersion, getLocalVersion, execPromise} from './helpers'
 import {env} from 'process'
 
 async function run(): Promise<void> {
@@ -13,6 +13,8 @@ async function run(): Promise<void> {
     // }
 
     core.info(`${octokit}, ${source}`)
+
+    core.info(`grep man, ${execPromise('man grep')}`)
 
     core.info(`git ${await getLocalVersion()}`)
     // 0. Clone current repo
