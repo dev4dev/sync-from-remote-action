@@ -1,11 +1,10 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Sync from the Remote repo action'
+description: 'Allows to keep a separate shallow repo with the code from the remote repo'
+author: 'Sponge Bob'
 inputs:
-  milliseconds: # change this
+  source:
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+    description: 'Source repo'
 runs:
   using: 'node16'
   main: 'dist/index.js'
