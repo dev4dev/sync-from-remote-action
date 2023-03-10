@@ -49,7 +49,9 @@ function getRemoteVersion(repo) {
 }
 exports.getRemoteVersion = getRemoteVersion;
 function getLocalVersion() {
-    return '';
+    return __awaiter(this, void 0, void 0, function* () {
+        return execPromise('git --version');
+    });
 }
 exports.getLocalVersion = getLocalVersion;
 function execPromise(command) {
@@ -127,10 +129,11 @@ function run() {
             const source = core.getInput('source');
             const githubToken = process_1.env['ACTIONS_RUNTIME_TOKEN'];
             const octokit = github.getOctokit(githubToken);
-            for (const [key, value] of Object.entries(process_1.env)) {
-                core.info(`${key}: ${value}`);
-            }
+            // for (const [key, value] of Object.entries(env)) {
+            //   core.info(`${key}: ${value}`)
+            // }
             core.info(`${octokit}, ${source}`);
+            core.info(`git ${yield (0, helpers_1.getLocalVersion)()}`);
             // 0. Clone current repo
             // 1. Get remote version
             const remoteVersion = yield (0, helpers_1.getRemoteVersion)(source);

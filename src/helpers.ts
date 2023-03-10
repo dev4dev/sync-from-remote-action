@@ -7,8 +7,8 @@ export async function getRemoteVersion(repo: string): Promise<string> {
   )
 }
 
-export function getLocalVersion(): string {
-  return ''
+export async function getLocalVersion(): Promise<string> {
+  return execPromise('git --version')
 }
 
 async function execPromise(command: string): Promise<string> {
