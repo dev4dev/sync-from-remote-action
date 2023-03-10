@@ -21,5 +21,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./
+        id: sync
         with:
           source: 'https://github.com/dev4dev/ParentTestSDK'
+      - name: Print result
+        run: |
+          echo ${{ steps.sync.outputs.result }}

@@ -1,5 +1,6 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
+import * as exec from '@actions/exec'
 
 async function run(): Promise<void> {
   try {
@@ -8,7 +9,7 @@ async function run(): Promise<void> {
     core.debug(`Syncing with the remote repo ${source}`)
     core.debug(github.context.repo.repo)
 
-    core.setOutput('time', new Date().toTimeString())
+    core.setOutput('result', 'synced')
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }
