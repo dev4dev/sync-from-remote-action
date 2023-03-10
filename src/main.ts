@@ -1,6 +1,6 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
-import {getRemoteVersion, getLocalVersion, execPromise} from './helpers'
+import {getRemoteVersion, getLocalVersion} from './helpers'
 import {env} from 'process'
 
 async function run(): Promise<void> {
