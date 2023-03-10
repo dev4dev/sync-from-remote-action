@@ -1,15 +1,17 @@
 import * as core from '@actions/core'
-import * as github from '@actions/github'
+// import * as github from '@actions/github'
 // import * as exec from '@actions/exec'
 import {getRemoteVersion} from './helpers'
+import {env} from 'process'
 
 async function run(): Promise<void> {
   try {
     const source: string = core.getInput('source')
-    const githubToken = process.env['GITHUB_TOKEN'] as string
-    const octokit = github.getOctokit(githubToken)
+    // const githubToken = process.env['GITHUB_TOKEN'] as string
+    // const octokit = github.getOctokit(githubToken)
+    core.info(`${env}`)
 
-    core.info(`${octokit}, ${source}`)
+    // core.info(`${octokit}, ${source}`)
 
     // 0. Clone current repo
 
