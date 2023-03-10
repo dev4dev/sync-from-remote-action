@@ -48,6 +48,7 @@ function run() {
             const source = core.getInput('source');
             core.debug(`Syncing with the remote repo ${source}`);
             core.debug(github.context.repo.repo);
+            console.log('Test nessage');
             core.setOutput('result', 'synced');
         }
         catch (error) {

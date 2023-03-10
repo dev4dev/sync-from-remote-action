@@ -9,6 +9,8 @@ async function run(): Promise<void> {
     core.debug(`Syncing with the remote repo ${source}`)
     core.debug(github.context.repo.repo)
 
+    console.log('Test nessage')
+
     core.setOutput('result', 'synced')
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
