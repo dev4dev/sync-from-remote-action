@@ -14,8 +14,6 @@ async function run(): Promise<void> {
 
     core.info(`${octokit}, ${source}`)
 
-    core.info(`grep man, ${execPromise('man grep')}`)
-
     core.info(`git ${await getLocalVersion()}`)
     // 0. Clone current repo
 

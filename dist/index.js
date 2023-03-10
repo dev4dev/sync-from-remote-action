@@ -44,7 +44,7 @@ const exec = __importStar(__nccwpck_require__(1514));
 // import * as core from '@actions/core'
 function getRemoteVersion(repo) {
     return __awaiter(this, void 0, void 0, function* () {
-        return execPromise(`git ls-remote --tags --sort="-v:refname" ${repo} | grep -P "refs/tags/"` //| head -n 1 | awk "{print $2}" | awk -F/ "{print $NF}"`
+        return execPromise(`git ls-remote --tags --sort='-v:refname' ${repo} | grep -E "refs/tags/v?\\d+.\\d+.\\d+$"` // | head -n 1 | awk '{print $2}' | awk -F/ '{print $NF}'`
         );
     });
 }
@@ -135,7 +135,6 @@ function run() {
             //   core.info(`${key}: ${value}`)
             // }
             core.info(`${octokit}, ${source}`);
-            core.info(`grep man, ${(0, helpers_1.execPromise)('man grep')}`);
             core.info(`git ${yield (0, helpers_1.getLocalVersion)()}`);
             // 0. Clone current repo
             // 1. Get remote version
