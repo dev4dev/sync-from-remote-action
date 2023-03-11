@@ -12,11 +12,10 @@ export async function getRemoteVersion(repo: string): Promise<SemVer> {
 }
 
 export async function getLocalVersion(): Promise<SemVer> {
-  // const output = await execPromise(`git tag --sort="-v:refname"`)
-  // const versions = output.split('\n')
+  const output = await execPromise(`git tag --sort="-v:refname"`)
+  const versions = output.split('\n')
 
-  // return extractVersionFromLogs(versions)
-  return new SemVer('1.0.0')
+  return extractVersionFromLogs(versions)
 }
 
 function extractVersionFromLogs(logs: string[]): SemVer {

@@ -53,10 +53,9 @@ function getRemoteVersion(repo) {
 exports.getRemoteVersion = getRemoteVersion;
 function getLocalVersion() {
     return __awaiter(this, void 0, void 0, function* () {
-        // const output = await execPromise(`git tag --sort="-v:refname"`)
-        // const versions = output.split('\n')
-        // return extractVersionFromLogs(versions)
-        return new semver_1.SemVer('1.0.0');
+        const output = yield execPromise(`git tag --sort="-v:refname"`);
+        const versions = output.split('\n');
+        return extractVersionFromLogs(versions);
     });
 }
 exports.getLocalVersion = getLocalVersion;
