@@ -43,54 +43,42 @@ exports.execPromise = exports.getLocalVersion = exports.getRemoteVersion = void 
 const exec = __importStar(__nccwpck_require__(1514));
 // import * as core from '@actions/core'
 function getRemoteVersion(repo) {
-    var _a, _b, _c;
     return __awaiter(this, void 0, void 0, function* () {
-        const output = yield execPromise(`bash -c "git ls-remote --tags --sort='-v:refname' ${repo}`);
+        const output = yield execPromise(`git ls-remote --tags --sort="-v:refname" ${repo}`);
         const versions = output.split('\n');
-        const matched = versions
-            .filter(line => {
-            var _a;
-            const match = line.match(new RegExp('refs/tags/v?\\d+.\\d+.\\d+$'));
-            if (match) {
-                return ((_a = match.index) !== null && _a !== void 0 ? _a : 0) > 0;
-            }
-            else {
-                return false;
-            }
-        })
-            .shift();
-        const version = (_c = (_b = (_a = matched === null || matched === void 0 ? void 0 : matched.split(new RegExp('\\s'))) === null || _a === void 0 ? void 0 : _a.pop()) === null || _b === void 0 ? void 0 : _b.split('/')) === null || _c === void 0 ? void 0 : _c.pop();
-        return version;
+        return extractVersionFromLogs(versions);
     });
 }
 exports.getRemoteVersion = getRemoteVersion;
 function getLocalVersion() {
     return __awaiter(this, void 0, void 0, function* () {
-        return execPromise('git --version');
+        const output = yield execPromise(`git tag --sort="-v:refname"`);
+        const versions = output.split('\n');
+        return extractVersionFromLogs(versions);
     });
 }
 exports.getLocalVersion = getLocalVersion;
+function extractVersionFromLogs(logs) {
+    var _a, _b, _c;
+    const matched = logs
+        .filter(line => {
+        var _a;
+        const match = line.match(new RegExp('refs/tags/v?\\d+.\\d+.\\d+$'));
+        if (match) {
+            return ((_a = match.index) !== null && _a !== void 0 ? _a : 0) > 0;
+        }
+        else {
+            return false;
+        }
+    })
+        .shift();
+    const version = (_c = (_b = (_a = matched === null || matched === void 0 ? void 0 : matched.split(new RegExp('\\s'))) === null || _a === void 0 ? void 0 : _a.pop()) === null || _b === void 0 ? void 0 : _b.split('/')) === null || _c === void 0 ? void 0 : _c.pop();
+    return version;
+}
 function execPromise(command) {
     return __awaiter(this, void 0, void 0, function* () {
         const result = yield exec.getExecOutput(command, []);
         return result.stdout;
-        // return new Promise<string>((resolve, reject) => {
-        //   exec.exec(command, [], {
-        //     listeners: {
-        //       stdout: data => {
-        //         core.info(`stdout: ${data.toString('utf8')}`)
-        //         resolve(data.toString())
-        //       },
-        //       stderr: data => {
-        //         core.info(`error: ${data.toString('utf8')}`)
-        //         reject(data.toString())
-        //       },
-        //       stdline(data) {
-        //         core.info(`stdline: ${data}`)
-        //       }
-        //     }
-        //   })
-        // })
     });
 }
 exports.execPromise = execPromise;
@@ -150,12 +138,13 @@ function run() {
             //   core.info(`${key}: ${value}`)
             // }
             core.info(`${octokit}, ${source}`);
-            core.info(`git ${yield (0, helpers_1.getLocalVersion)()}`);
             // 0. Clone current repo
             // 1. Get remote version
             const remoteVersion = yield (0, helpers_1.getRemoteVersion)(source);
             core.info(`Remote version: ${remoteVersion}`);
             // 2. Get local version
+            const localVersion = yield (0, helpers_1.getLocalVersion)();
+            core.info(`Local version: ${localVersion}`);
             // 3. Compare version
             // 4. SYNC IF NEEDED
             // 5. Clone remote repo

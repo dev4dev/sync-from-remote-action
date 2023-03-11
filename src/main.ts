@@ -14,7 +14,6 @@ async function run(): Promise<void> {
 
     core.info(`${octokit}, ${source}`)
 
-    core.info(`git ${await getLocalVersion()}`)
     // 0. Clone current repo
 
     // 1. Get remote version
@@ -22,6 +21,8 @@ async function run(): Promise<void> {
     core.info(`Remote version: ${remoteVersion}`)
 
     // 2. Get local version
+    const localVersion = await getLocalVersion()
+    core.info(`Local version: ${localVersion}`)
 
     // 3. Compare version
 
