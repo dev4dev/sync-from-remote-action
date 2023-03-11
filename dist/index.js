@@ -127,6 +127,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
+const exec = __importStar(__nccwpck_require__(1514));
 const helpers_1 = __nccwpck_require__(5008);
 const process_1 = __nccwpck_require__(7282);
 const semver_1 = __nccwpck_require__(1383);
@@ -141,6 +142,7 @@ function run() {
             // }
             core.info(`${octokit}, ${source}`);
             // 0. Clone current repo
+            // uses: actions/checkout@v3
             core.startGroup('Precheck');
             // 1. Get remote version
             const remoteVersion = yield (0, helpers_1.getRemoteVersion)(source);
@@ -157,11 +159,16 @@ function run() {
                 return;
             }
             core.startGroup('Syncing...');
-            // 4. SYNC IF NEEDED
-            // 5. Clone remote repo
-            // 6. Delete local files (except .github, .git, ...?)
-            // 7. Copy remote files (except .github, .git)
-            // 8. git add --all && git commit with version name && git push
+            // SYNC IF NEEDED
+            // 4. Clone remote repo
+            yield exec.exec(`git clone ${source} __remote__source__`);
+            const ls = yield exec.getExecOutput(`ls -ahl`, [], {
+                cwd: '__remote__source__'
+            });
+            core.info(`remote content ${ls.stdout}`);
+            // 5. Delete local files (except .github, .git, ...?)
+            // 6. Copy remote files (except .github, .git)
+            // 7. git add --all && git commit with version name && git push
             // core.startGroup('Test Group')
             // core.info(`Syncing with the remote repo ${source}`)
             // core.info(github.context.repo.repo)

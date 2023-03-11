@@ -1,5 +1,6 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
+import * as exec from '@actions/exec'
 import {getRemoteVersion, getLocalVersion} from './helpers'
 import {env} from 'process'
 import {gt} from 'semver'
@@ -16,6 +17,7 @@ async function run(): Promise<void> {
     core.info(`${octokit}, ${source}`)
 
     // 0. Clone current repo
+    // uses: actions/checkout@v3
 
     core.startGroup('Precheck')
     // 1. Get remote version
@@ -37,15 +39,20 @@ async function run(): Promise<void> {
     }
 
     core.startGroup('Syncing...')
-    // 4. SYNC IF NEEDED
+    // SYNC IF NEEDED
 
-    // 5. Clone remote repo
+    // 4. Clone remote repo
+    await exec.exec(`git clone ${source} __remote__source__`)
+    const ls = await exec.getExecOutput(`ls -ahl`, [], {
+      cwd: '__remote__source__'
+    })
+    core.info(`remote content ${ls.stdout}`)
 
-    // 6. Delete local files (except .github, .git, ...?)
+    // 5. Delete local files (except .github, .git, ...?)
 
-    // 7. Copy remote files (except .github, .git)
+    // 6. Copy remote files (except .github, .git)
 
-    // 8. git add --all && git commit with version name && git push
+    // 7. git add --all && git commit with version name && git push
 
     // core.startGroup('Test Group')
     // core.info(`Syncing with the remote repo ${source}`)
