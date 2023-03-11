@@ -17,6 +17,7 @@ async function run(): Promise<void> {
 
     // 0. Clone current repo
 
+    core.startGroup('Precheck')
     // 1. Get remote version
     const remoteVersion = await getRemoteVersion(source)
     core.info(`Remote version: ${remoteVersion}`)
@@ -28,7 +29,14 @@ async function run(): Promise<void> {
     // 3. Compare version
     const needsSync = gt(remoteVersion, localVersion)
     core.info(`Needs sync: ${needsSync}`)
+    core.endGroup()
 
+    if (!needsSync) {
+      core.setOutput('synced', false)
+      return
+    }
+
+    core.startGroup('Syncing...')
     // 4. SYNC IF NEEDED
 
     // 5. Clone remote repo
@@ -44,7 +52,8 @@ async function run(): Promise<void> {
     // core.info(github.context.repo.repo)
     // core.endGroup()
 
-    core.setOutput('result', 'synced')
+    core.endGroup()
+    core.setOutput('synced', true)
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }
