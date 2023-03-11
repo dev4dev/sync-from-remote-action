@@ -74,7 +74,7 @@ function extractVersionFromLogs(logs) {
     })
         .shift();
     const version = (_c = (_b = (_a = matched === null || matched === void 0 ? void 0 : matched.split(new RegExp('\\s'))) === null || _a === void 0 ? void 0 : _a.pop()) === null || _b === void 0 ? void 0 : _b.split('/')) === null || _c === void 0 ? void 0 : _c.pop();
-    return new semver_1.SemVer(version !== null && version !== void 0 ? version : '1.0.0');
+    return new semver_1.SemVer(version !== null && version !== void 0 ? version : '0.0.0');
 }
 function execPromise(command) {
     return __awaiter(this, void 0, void 0, function* () {

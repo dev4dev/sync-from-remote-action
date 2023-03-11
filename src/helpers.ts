@@ -31,7 +31,7 @@ function extractVersionFromLogs(logs: string[]): SemVer {
     .shift()
 
   const version = matched?.split(new RegExp('\\s'))?.pop()?.split('/')?.pop()
-  return new SemVer(version ?? '1.0.0')
+  return new SemVer(version ?? '0.0.0')
 }
 
 export async function execPromise(command: string): Promise<string> {
