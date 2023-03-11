@@ -2,6 +2,7 @@ import * as core from '@actions/core'
 import * as github from '@actions/github'
 import {getRemoteVersion, getLocalVersion} from './helpers'
 import {env} from 'process'
+import {gt} from 'semver'
 
 async function run(): Promise<void> {
   try {
@@ -25,6 +26,8 @@ async function run(): Promise<void> {
     core.info(`Local version: ${localVersion}`)
 
     // 3. Compare version
+    const needsSync = gt(remoteVersion, localVersion)
+    core.info(`Needs sync: ${needsSync}`)
 
     // 4. SYNC IF NEEDED
 

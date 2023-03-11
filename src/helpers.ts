@@ -1,9 +1,8 @@
 import * as exec from '@actions/exec'
 // import * as core from '@actions/core'
+import {SemVer} from 'semver'
 
-export async function getRemoteVersion(
-  repo: string
-): Promise<string | undefined> {
+export async function getRemoteVersion(repo: string): Promise<SemVer> {
   const output = await execPromise(
     `git ls-remote --tags --sort="-v:refname" ${repo}`
   )
@@ -12,14 +11,14 @@ export async function getRemoteVersion(
   return extractVersionFromLogs(versions)
 }
 
-export async function getLocalVersion(): Promise<string | undefined> {
+export async function getLocalVersion(): Promise<SemVer> {
   const output = await execPromise(`git tag --sort="-v:refname"`)
   const versions = output.split('\n')
 
   return extractVersionFromLogs(versions)
 }
 
-function extractVersionFromLogs(logs: string[]): string | undefined {
+function extractVersionFromLogs(logs: string[]): SemVer {
   const matched = logs
     .filter(line => {
       const match = line.match(new RegExp('refs/tags/v?\\d+.\\d+.\\d+$'))
@@ -32,7 +31,7 @@ function extractVersionFromLogs(logs: string[]): string | undefined {
     .shift()
 
   const version = matched?.split(new RegExp('\\s'))?.pop()?.split('/')?.pop()
-  return version
+  return new SemVer(version ?? '0.0.0')
 }
 
 export async function execPromise(command: string): Promise<string> {
