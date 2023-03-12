@@ -62,7 +62,7 @@ async function run(): Promise<void> {
     core.info(`local content ${(await exec.getExecOutput(`ls -ahl`)).stdout}`)
 
     // Copy remote nonhidden files (??)
-    await exec.exec(`cp -R ./${remoteRepoDirName}/* ./`)
+    await exec.exec(`cp -R ./${remoteRepoDirName}/ ./`)
 
     // Delete parent repo
     await exec.exec(`rm -rf ./${remoteRepoDirName}`)
