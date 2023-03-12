@@ -1,6 +1,7 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 import * as exec from '@actions/exec'
+import * as io from '@actions/io'
 import {getRemoteVersion, getLocalVersion} from './helpers'
 import {env} from 'process'
 import {gt} from 'semver'
@@ -49,7 +50,7 @@ async function run(): Promise<void> {
     // SYNC IF NEEDED
 
     // Delete nonhidden local files (??)
-    await exec.exec(`rm -rf *`)
+    await io.rmRF('*')
 
     // Clone remote repo
     await exec.exec(`git clone ${source} ${remoteRepoDirName}`)
@@ -62,10 +63,13 @@ async function run(): Promise<void> {
     core.info(`local content ${(await exec.getExecOutput(`ls -ahl`)).stdout}`)
 
     // Copy remote nonhidden files (??)
-    await exec.exec(`cp -R ./${remoteRepoDirName}/ ./`)
+    await io.cp('./${remoteRepoDirName}', './', {
+      recursive: true,
+      force: true
+    })
 
     // Delete parent repo
-    await exec.exec(`rm -rf ./${remoteRepoDirName}`)
+    await io.rmRF(`./${remoteRepoDirName}`)
 
     // git add --all && git commit with version name && git push
     await exec.exec(`git add --all`)

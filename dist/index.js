@@ -128,6 +128,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const exec = __importStar(__nccwpck_require__(1514));
+const io = __importStar(__nccwpck_require__(7436));
 const helpers_1 = __nccwpck_require__(5008);
 const process_1 = __nccwpck_require__(7282);
 const semver_1 = __nccwpck_require__(1383);
@@ -166,7 +167,7 @@ function run() {
             core.startGroup('Syncing...');
             // SYNC IF NEEDED
             // Delete nonhidden local files (??)
-            yield exec.exec(`rm -rf *`);
+            yield io.rmRF('*');
             // Clone remote repo
             yield exec.exec(`git clone ${source} ${remoteRepoDirName}`);
             const rls = yield exec.getExecOutput(`ls -ahl`, [], {
@@ -176,9 +177,12 @@ function run() {
             // check local content
             core.info(`local content ${(yield exec.getExecOutput(`ls -ahl`)).stdout}`);
             // Copy remote nonhidden files (??)
-            yield exec.exec(`cp -R ./${remoteRepoDirName}/ ./`);
+            yield io.cp('./${remoteRepoDirName}', './', {
+                recursive: true,
+                force: true
+            });
             // Delete parent repo
-            yield exec.exec(`rm -rf ./${remoteRepoDirName}`);
+            yield io.rmRF(`./${remoteRepoDirName}`);
             // git add --all && git commit with version name && git push
             yield exec.exec(`git add --all`);
             yield exec.exec(`git commot -m "${remoteVersion.format()}"`);
