@@ -177,7 +177,7 @@ function run() {
             // check local content
             core.info(`local content ${(yield exec.getExecOutput(`ls -ahl`)).stdout}`);
             // Copy remote nonhidden files (??)
-            yield io.cp('./${remoteRepoDirName}', './', {
+            yield io.cp(`./${remoteRepoDirName}`, './', {
                 recursive: true,
                 force: true
             });

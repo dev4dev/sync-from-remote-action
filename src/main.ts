@@ -63,7 +63,7 @@ async function run(): Promise<void> {
     core.info(`local content ${(await exec.getExecOutput(`ls -ahl`)).stdout}`)
 
     // Copy remote nonhidden files (??)
-    await io.cp('./${remoteRepoDirName}', './', {
+    await io.cp(`./${remoteRepoDirName}`, './', {
       recursive: true,
       force: true
     })
