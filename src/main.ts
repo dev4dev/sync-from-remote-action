@@ -62,6 +62,9 @@ async function run(): Promise<void> {
     // check local content
     core.info(`local content ${(await exec.getExecOutput(`ls -ahl`)).stdout}`)
 
+    // delete all hidden files
+    await io.rmRF(`./${remoteRepoDirName}/.*`)
+
     // Copy remote nonhidden files (??)
     await io.cp(`./${remoteRepoDirName}`, './', {
       recursive: true,

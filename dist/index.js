@@ -176,6 +176,8 @@ function run() {
             core.info(`remote content ${rls.stdout}`);
             // check local content
             core.info(`local content ${(yield exec.getExecOutput(`ls -ahl`)).stdout}`);
+            // delete all hidden files
+            yield io.rmRF(`./${remoteRepoDirName}/.*`);
             // Copy remote nonhidden files (??)
             yield io.cp(`./${remoteRepoDirName}`, './', {
                 recursive: true,
