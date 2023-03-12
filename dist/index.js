@@ -159,15 +159,10 @@ function run() {
                 core.setOutput('synced', false);
                 return;
             }
-            // Quit if in test mode, we don't want to delete working files
+            // Check if in test mode, we don't want to delete working files
             const repo = github.context.repo;
             const path = `${repo.owner}/${repo.repo}`;
             const testing = path === 'dev4dev/sync-from-remote-action';
-            if (testing) {
-                core.info('Stopping in testing mode...');
-                return;
-            }
-            return;
             core.startGroup('Syncing...');
             // SYNC IF NEEDED
             // Delete nonhidden local files (??)
@@ -185,7 +180,13 @@ function run() {
             // git add --all && git commit with version name && git push
             yield exec.exec(`git add --all`);
             yield exec.exec(`git commot -m "${remoteVersion.format()}"`);
-            yield exec.exec(`git push`);
+            if (testing) {
+                core.info((yield exec.getExecOutput(`git status`)).stdout);
+                core.info('> git push');
+            }
+            else {
+                yield exec.exec(`git push`);
+            }
             core.endGroup();
             core.setOutput('synced', true);
         }

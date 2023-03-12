@@ -40,16 +40,10 @@ async function run(): Promise<void> {
       return
     }
 
-    // Quit if in test mode, we don't want to delete working files
+    // Check if in test mode, we don't want to delete working files
     const repo = github.context.repo
     const path = `${repo.owner}/${repo.repo}`
     const testing = path === 'dev4dev/sync-from-remote-action'
-    if (testing) {
-      core.info('Stopping in testing mode...')
-      return
-    }
-
-    return
 
     core.startGroup('Syncing...')
     // SYNC IF NEEDED
@@ -73,7 +67,12 @@ async function run(): Promise<void> {
     // git add --all && git commit with version name && git push
     await exec.exec(`git add --all`)
     await exec.exec(`git commot -m "${remoteVersion.format()}"`)
-    await exec.exec(`git push`)
+    if (testing) {
+      core.info((await exec.getExecOutput(`git status`)).stdout)
+      core.info('> git push')
+    } else {
+      await exec.exec(`git push`)
+    }
 
     core.endGroup()
     core.setOutput('synced', true)
