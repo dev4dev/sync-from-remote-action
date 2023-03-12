@@ -176,9 +176,9 @@ function run() {
             // check local content
             core.info(`local content ${(yield exec.getExecOutput(`ls -ahl`)).stdout}`);
             // Copy remote nonhidden files (??)
-            yield exec.exec(`cp -R ${remoteRepoDirName}/* ./`);
+            yield exec.exec(`cp -R ./${remoteRepoDirName}/* ./`);
             // Delete parent repo
-            yield exec.exec(`rm -rf ${remoteRepoDirName}`);
+            yield exec.exec(`rm -rf ./${remoteRepoDirName}`);
             // git add --all && git commit with version name && git push
             yield exec.exec(`git add --all`);
             yield exec.exec(`git commot -m "${remoteVersion.format()}"`);
