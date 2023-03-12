@@ -131,6 +131,7 @@ const exec = __importStar(__nccwpck_require__(1514));
 const helpers_1 = __nccwpck_require__(5008);
 const process_1 = __nccwpck_require__(7282);
 const semver_1 = __nccwpck_require__(1383);
+const remoteRepoDirName = '__remote__source__';
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -158,21 +159,33 @@ function run() {
                 core.setOutput('synced', false);
                 return;
             }
+            // Quit if in test mode, we don't want to delete working files
+            const repo = github.context.repo;
+            const path = `${repo.owner}/${repo.repo}`;
+            const testing = path === 'dev4dev/sync-from-remote-action';
+            if (testing) {
+                core.info('Stopping in testing mode...');
+                return;
+            }
+            return;
             core.startGroup('Syncing...');
             // SYNC IF NEEDED
-            // 4. Clone remote repo
-            yield exec.exec(`git clone ${source} __remote__source__`);
+            // Delete nonhidden local files (??)
+            yield exec.exec(`rm -rf *`);
+            // Clone remote repo
+            yield exec.exec(`git clone ${source} ${remoteRepoDirName}`);
             const ls = yield exec.getExecOutput(`ls -ahl`, [], {
-                cwd: '__remote__source__'
+                cwd: remoteRepoDirName
             });
             core.info(`remote content ${ls.stdout}`);
-            // 5. Delete local files (except .github, .git, ...?)
-            // 6. Copy remote files (except .github, .git)
-            // 7. git add --all && git commit with version name && git push
-            // core.startGroup('Test Group')
-            // core.info(`Syncing with the remote repo ${source}`)
-            // core.info(github.context.repo.repo)
-            // core.endGroup()
+            // Copy remote nonhidden files (??)
+            yield exec.exec(`cp -R ${remoteRepoDirName}/* ./`);
+            // Delete parent repo
+            yield exec.exec(`rm -rf ${remoteRepoDirName}`);
+            // git add --all && git commit with version name && git push
+            yield exec.exec(`git add --all`);
+            yield exec.exec(`git commot -m "${remoteVersion.format()}"`);
+            yield exec.exec(`git push`);
             core.endGroup();
             core.setOutput('synced', true);
         }

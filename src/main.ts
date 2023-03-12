@@ -5,6 +5,8 @@ import {getRemoteVersion, getLocalVersion} from './helpers'
 import {env} from 'process'
 import {gt} from 'semver'
 
+const remoteRepoDirName = '__remote__source__'
+
 async function run(): Promise<void> {
   try {
     const source: string = core.getInput('source')
@@ -38,26 +40,40 @@ async function run(): Promise<void> {
       return
     }
 
+    // Quit if in test mode, we don't want to delete working files
+    const repo = github.context.repo
+    const path = `${repo.owner}/${repo.repo}`
+    const testing = path === 'dev4dev/sync-from-remote-action'
+    if (testing) {
+      core.info('Stopping in testing mode...')
+      return
+    }
+
+    return
+
     core.startGroup('Syncing...')
     // SYNC IF NEEDED
 
-    // 4. Clone remote repo
-    await exec.exec(`git clone ${source} __remote__source__`)
+    // Delete nonhidden local files (??)
+    await exec.exec(`rm -rf *`)
+
+    // Clone remote repo
+    await exec.exec(`git clone ${source} ${remoteRepoDirName}`)
     const ls = await exec.getExecOutput(`ls -ahl`, [], {
-      cwd: '__remote__source__'
+      cwd: remoteRepoDirName
     })
     core.info(`remote content ${ls.stdout}`)
 
-    // 5. Delete local files (except .github, .git, ...?)
+    // Copy remote nonhidden files (??)
+    await exec.exec(`cp -R ${remoteRepoDirName}/* ./`)
 
-    // 6. Copy remote files (except .github, .git)
+    // Delete parent repo
+    await exec.exec(`rm -rf ${remoteRepoDirName}`)
 
-    // 7. git add --all && git commit with version name && git push
-
-    // core.startGroup('Test Group')
-    // core.info(`Syncing with the remote repo ${source}`)
-    // core.info(github.context.repo.repo)
-    // core.endGroup()
+    // git add --all && git commit with version name && git push
+    await exec.exec(`git add --all`)
+    await exec.exec(`git commot -m "${remoteVersion.format()}"`)
+    await exec.exec(`git push`)
 
     core.endGroup()
     core.setOutput('synced', true)
