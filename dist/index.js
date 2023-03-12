@@ -169,10 +169,12 @@ function run() {
             yield exec.exec(`rm -rf *`);
             // Clone remote repo
             yield exec.exec(`git clone ${source} ${remoteRepoDirName}`);
-            const ls = yield exec.getExecOutput(`ls -ahl`, [], {
+            const rls = yield exec.getExecOutput(`ls -ahl`, [], {
                 cwd: remoteRepoDirName
             });
-            core.info(`remote content ${ls.stdout}`);
+            core.info(`remote content ${rls.stdout}`);
+            // check local content
+            core.info(`local content ${(yield exec.getExecOutput(`ls -ahl`)).stdout}`);
             // Copy remote nonhidden files (??)
             yield exec.exec(`cp -R ${remoteRepoDirName}/* ./`);
             // Delete parent repo

@@ -53,10 +53,13 @@ async function run(): Promise<void> {
 
     // Clone remote repo
     await exec.exec(`git clone ${source} ${remoteRepoDirName}`)
-    const ls = await exec.getExecOutput(`ls -ahl`, [], {
+    const rls = await exec.getExecOutput(`ls -ahl`, [], {
       cwd: remoteRepoDirName
     })
-    core.info(`remote content ${ls.stdout}`)
+    core.info(`remote content ${rls.stdout}`)
+
+    // check local content
+    core.info(`local content ${(await exec.getExecOutput(`ls -ahl`)).stdout}`)
 
     // Copy remote nonhidden files (??)
     await exec.exec(`cp -R ${remoteRepoDirName}/* ./`)
