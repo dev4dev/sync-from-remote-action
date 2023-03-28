@@ -55,7 +55,7 @@ function getLocalVersion() {
     return __awaiter(this, void 0, void 0, function* () {
         const output = yield execPromise(`git tag --sort="-v:refname"`);
         const versions = output.split('\n');
-        return extractVersionFromLogs(versions);
+        return extractVersionFromLogs(versions).version;
     });
 }
 exports.getLocalVersion = getLocalVersion;
@@ -73,8 +73,19 @@ function extractVersionFromLogs(logs) {
         }
     })
         .shift();
-    const version = (_c = (_b = (_a = matched === null || matched === void 0 ? void 0 : matched.split(new RegExp('\\s'))) === null || _a === void 0 ? void 0 : _a.pop()) === null || _b === void 0 ? void 0 : _b.split('/')) === null || _c === void 0 ? void 0 : _c.pop();
-    return new semver_1.SemVer(version !== null && version !== void 0 ? version : '0.0.0');
+    if (matched) {
+        const version = (_c = (_b = (_a = matched.split(new RegExp('\\s'))) === null || _a === void 0 ? void 0 : _a.pop()) === null || _b === void 0 ? void 0 : _b.split('/')) === null || _c === void 0 ? void 0 : _c.pop();
+        return {
+            version: new semver_1.SemVer(version !== null && version !== void 0 ? version : '0.0.0'),
+            tag: matched.replace('refs/tags/', '')
+        };
+    }
+    else {
+        return {
+            version: new semver_1.SemVer('0.0.0'),
+            tag: ''
+        };
+    }
 }
 function execPromise(command) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -154,17 +165,13 @@ function run() {
             const localVersion = yield (0, helpers_1.getLocalVersion)();
             core.info(`Local version: ${localVersion}`);
             // 3. Compare version
-            const needsSync = (0, semver_1.gt)(remoteVersion, localVersion);
+            const needsSync = (0, semver_1.gt)(remoteVersion.version, localVersion);
             core.info(`Needs sync: ${needsSync}`);
             core.endGroup();
             if (!needsSync) {
                 core.setOutput('synced', false);
                 return;
             }
-            // // Check if in test mode, we don't want to delete working files
-            // const repo = github.context.repo
-            // const path = `${repo.owner}/${repo.repo}`
-            // const testing = path === 'dev4dev/sync-from-remote-action'
             core.startGroup('Syncing...');
             // SYNC IF NEEDED
             // Delete nonhidden local files (??)
@@ -187,6 +194,9 @@ function run() {
             core.info(`local content ${(yield exec.getExecOutput(`ls -ahl`)).stdout}`);
             // Clone remote repo
             yield exec.exec(`git clone ${source} ${remoteRepoDirName}`);
+            yield exec.getExecOutput(`git checkout ${remoteVersion.tag}`, [], {
+                cwd: remoteRepoDirName
+            });
             const rls = yield exec.getExecOutput(`ls -ahl`, [], {
                 cwd: remoteRepoDirName
             });
@@ -214,26 +224,9 @@ function run() {
             yield io.rmRF(`./${remoteRepoDirName}`);
             // check local content
             core.info(`local content ${(yield exec.getExecOutput(`ls -ahl`)).stdout}`);
-            // setup git
-            // const gitEmail: string = core.getInput('gitEmail')
-            // const gitName: string = core.getInput('gitName')
-            // await exec.exec(`git config --global user.email "${gitEmail}"`)
-            // await exec.exec(`git config --global user.name "${gitName}"`)
-            // // git add --all && git commit with version name && git push
-            // await exec.exec(`git add --all`)
-            // await exec.exec(`git commit -m "${remoteVersion.format()}"`)
-            // await exec.exec(`git tag ${remoteVersion.format()}`)
-            // if (testing) {
-            //   core.info((await exec.getExecOutput(`git status`)).stdout)
-            //   core.info((await exec.getExecOutput(`git log --format=oneline`)).stdout)
-            //   core.info('> git push')
-            // } else {
-            //   await exec.exec(`git push`)
-            //   await exec.exec(`git push --tags`)
-            // }
             core.endGroup();
             core.setOutput('synced', true);
-            core.setOutput('version', remoteVersion.format());
+            core.setOutput('version', remoteVersion.version.format());
         }
         catch (error) {
             if (error instanceof Error)
