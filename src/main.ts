@@ -96,11 +96,11 @@ async function run(): Promise<void> {
       })
     }
 
+    // Delete parent repo
+    await io.rmRF(`./${remoteRepoDirName}`)
+
     // check local content
     core.info(`local content ${(await exec.getExecOutput(`ls -ahl`)).stdout}`)
-
-    // // Delete parent repo
-    // await io.rmRF(`./${remoteRepoDirName}`)
 
     // // git add --all && git commit with version name && git push
     // await exec.exec(`git add --all`)
