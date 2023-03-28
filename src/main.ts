@@ -63,11 +63,8 @@ async function run(): Promise<void> {
     for (const file of visibleLocal) {
       core.info(`local > ${file}`)
     }
-    // for await (const file of localItems.globGenerator()) {
-    //   core.info(`local > ${file}`)
-    // }
 
-    // await io.rmRF('*')
+    await io.rmRF('*')
 
     // // Clone remote repo
     // await exec.exec(`git clone ${source} ${remoteRepoDirName}`)
@@ -77,7 +74,7 @@ async function run(): Promise<void> {
     // core.info(`remote content ${rls.stdout}`)
 
     // // check local content
-    // core.info(`local content ${(await exec.getExecOutput(`ls -ahl`)).stdout}`)
+    core.info(`local content ${(await exec.getExecOutput(`ls -ahl`)).stdout}`)
 
     // list remove non hidden files (glob)
     // const remoteItems = await glob.create('*')

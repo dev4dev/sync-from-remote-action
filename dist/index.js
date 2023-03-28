@@ -127,6 +127,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
+const exec = __importStar(__nccwpck_require__(1514));
+const io = __importStar(__nccwpck_require__(7436));
 const glob = __importStar(__nccwpck_require__(8090));
 const helpers_1 = __nccwpck_require__(5008);
 const process_1 = __nccwpck_require__(7282);
@@ -179,10 +181,7 @@ function run() {
             for (const file of visibleLocal) {
                 core.info(`local > ${file}`);
             }
-            // for await (const file of localItems.globGenerator()) {
-            //   core.info(`local > ${file}`)
-            // }
-            // await io.rmRF('*')
+            yield io.rmRF('*');
             // // Clone remote repo
             // await exec.exec(`git clone ${source} ${remoteRepoDirName}`)
             // const rls = await exec.getExecOutput(`ls -ahl`, [], {
@@ -190,7 +189,7 @@ function run() {
             // })
             // core.info(`remote content ${rls.stdout}`)
             // // check local content
-            // core.info(`local content ${(await exec.getExecOutput(`ls -ahl`)).stdout}`)
+            core.info(`local content ${(yield exec.getExecOutput(`ls -ahl`)).stdout}`);
             // list remove non hidden files (glob)
             // const remoteItems = await glob.create('*')
             // for await (const file of remoteItems.globGenerator()) {
