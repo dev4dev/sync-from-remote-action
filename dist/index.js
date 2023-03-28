@@ -215,23 +215,22 @@ function run() {
             // check local content
             core.info(`local content ${(yield exec.getExecOutput(`ls -ahl`)).stdout}`);
             // setup git
-            const gitEmail = core.getInput('gitEmail');
-            const gitName = core.getInput('gitName');
-            yield exec.exec(`git config --global user.email "${gitEmail}"`);
-            yield exec.exec(`git config --global user.name "${gitName}"`);
-            // git add --all && git commit with version name && git push
-            yield exec.exec(`git add --all`);
-            yield exec.exec(`git commit -m "${remoteVersion.format()}"`);
-            yield exec.exec(`git tag ${remoteVersion.format()}`);
-            if (testing) {
-                core.info((yield exec.getExecOutput(`git status`)).stdout);
-                core.info((yield exec.getExecOutput(`git log --format=oneline`)).stdout);
-                core.info('> git push');
-            }
-            else {
-                yield exec.exec(`git push`);
-                yield exec.exec(`git push --tags`);
-            }
+            // const gitEmail: string = core.getInput('gitEmail')
+            // const gitName: string = core.getInput('gitName')
+            // await exec.exec(`git config --global user.email "${gitEmail}"`)
+            // await exec.exec(`git config --global user.name "${gitName}"`)
+            // // git add --all && git commit with version name && git push
+            // await exec.exec(`git add --all`)
+            // await exec.exec(`git commit -m "${remoteVersion.format()}"`)
+            // await exec.exec(`git tag ${remoteVersion.format()}`)
+            // if (testing) {
+            //   core.info((await exec.getExecOutput(`git status`)).stdout)
+            //   core.info((await exec.getExecOutput(`git log --format=oneline`)).stdout)
+            //   core.info('> git push')
+            // } else {
+            //   await exec.exec(`git push`)
+            //   await exec.exec(`git push --tags`)
+            // }
             core.endGroup();
             core.setOutput('synced', true);
         }
