@@ -51,17 +51,21 @@ async function run(): Promise<void> {
     // SYNC IF NEEDED
 
     // Delete nonhidden local files (??)
-    await io.rmRF('*')
+    const remoteItems = await glob.create('*')
+    for await (const file of remoteItems.globGenerator()) {
+      core.info(`local > ${file}`)
+    }
+    // await io.rmRF('*')
 
-    // Clone remote repo
-    await exec.exec(`git clone ${source} ${remoteRepoDirName}`)
-    const rls = await exec.getExecOutput(`ls -ahl`, [], {
-      cwd: remoteRepoDirName
-    })
-    core.info(`remote content ${rls.stdout}`)
+    // // Clone remote repo
+    // await exec.exec(`git clone ${source} ${remoteRepoDirName}`)
+    // const rls = await exec.getExecOutput(`ls -ahl`, [], {
+    //   cwd: remoteRepoDirName
+    // })
+    // core.info(`remote content ${rls.stdout}`)
 
-    // check local content
-    core.info(`local content ${(await exec.getExecOutput(`ls -ahl`)).stdout}`)
+    // // check local content
+    // core.info(`local content ${(await exec.getExecOutput(`ls -ahl`)).stdout}`)
 
     // list remove non hidden files (glob)
     // const remoteItems = await glob.create('*')
