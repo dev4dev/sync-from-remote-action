@@ -124,13 +124,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __asyncValues = (this && this.__asyncValues) || function (o) {
-    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-    var m = o[Symbol.asyncIterator], i;
-    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
-    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
-    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
@@ -140,7 +133,6 @@ const process_1 = __nccwpck_require__(7282);
 const semver_1 = __nccwpck_require__(1383);
 const remoteRepoDirName = '__remote__source__';
 function run() {
-    var _a, e_1, _b, _c;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const source = core.getInput('source');
@@ -177,26 +169,19 @@ function run() {
             const localItems = yield glob.create('*', {
                 implicitDescendants: false
             });
-            try {
-                for (var _d = true, _e = __asyncValues(localItems.globGenerator()), _f; _f = yield _e.next(), _a = _f.done, !_a;) {
-                    _c = _f.value;
-                    _d = false;
-                    try {
-                        const file = _c;
-                        core.info(`local > ${file}`);
-                    }
-                    finally {
-                        _d = true;
-                    }
-                }
+            const allLocal = yield localItems.glob();
+            const visibleLocal = allLocal.filter(file => {
+                var _a, _b;
+                const parts = file.split('/');
+                const hidden = (_b = (_a = parts.pop()) === null || _a === void 0 ? void 0 : _a.startsWith('.')) !== null && _b !== void 0 ? _b : false;
+                return !hidden;
+            });
+            for (const file of visibleLocal) {
+                core.info(`local > ${file}`);
             }
-            catch (e_1_1) { e_1 = { error: e_1_1 }; }
-            finally {
-                try {
-                    if (!_d && !_a && (_b = _e.return)) yield _b.call(_e);
-                }
-                finally { if (e_1) throw e_1.error; }
-            }
+            // for await (const file of localItems.globGenerator()) {
+            //   core.info(`local > ${file}`)
+            // }
             // await io.rmRF('*')
             // // Clone remote repo
             // await exec.exec(`git clone ${source} ${remoteRepoDirName}`)

@@ -54,9 +54,18 @@ async function run(): Promise<void> {
     const localItems = await glob.create('*', {
       implicitDescendants: false
     })
-    for await (const file of localItems.globGenerator()) {
+    const allLocal = await localItems.glob()
+    const visibleLocal = allLocal.filter(file => {
+      const parts = file.split('/')
+      const hidden = parts.pop()?.startsWith('.') ?? false
+      return !hidden
+    })
+    for (const file of visibleLocal) {
       core.info(`local > ${file}`)
     }
+    // for await (const file of localItems.globGenerator()) {
+    //   core.info(`local > ${file}`)
+    // }
 
     // await io.rmRF('*')
 
