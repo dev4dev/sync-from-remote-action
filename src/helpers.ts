@@ -37,9 +37,10 @@ function extractVersionFromLogs(logs: string[]): VersionDetails {
 
   if (matched) {
     const version = matched.split(new RegExp('\\s'))?.pop()?.split('/')?.pop()
+    const tag = matched.split(' ').shift() ?? ''
     return {
       version: new SemVer(version ?? '0.0.0'),
-      tag: matched.replace('refs/tags/', '')
+      tag
     }
   } else {
     return {
