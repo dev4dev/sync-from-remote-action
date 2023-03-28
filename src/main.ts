@@ -42,10 +42,10 @@ async function run(): Promise<void> {
       return
     }
 
-    // Check if in test mode, we don't want to delete working files
-    const repo = github.context.repo
-    const path = `${repo.owner}/${repo.repo}`
-    const testing = path === 'dev4dev/sync-from-remote-action'
+    // // Check if in test mode, we don't want to delete working files
+    // const repo = github.context.repo
+    // const path = `${repo.owner}/${repo.repo}`
+    // const testing = path === 'dev4dev/sync-from-remote-action'
 
     core.startGroup('Syncing...')
     // SYNC IF NEEDED
