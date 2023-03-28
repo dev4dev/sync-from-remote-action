@@ -102,15 +102,16 @@ async function run(): Promise<void> {
     // check local content
     core.info(`local content ${(await exec.getExecOutput(`ls -ahl`)).stdout}`)
 
-    // // git add --all && git commit with version name && git push
-    // await exec.exec(`git add --all`)
-    // await exec.exec(`git commot -m "${remoteVersion.format()}"`)
-    // if (testing) {
-    //   core.info((await exec.getExecOutput(`git status`)).stdout)
-    //   core.info('> git push')
-    // } else {
-    //   await exec.exec(`git push`)
-    // }
+    // git add --all && git commit with version name && git push
+    await exec.exec(`git add --all`)
+    await exec.exec(`git commot -m "${remoteVersion.format()}"`)
+    if (testing) {
+      core.info((await exec.getExecOutput(`git status`)).stdout)
+      core.info('> git push')
+    } else {
+      // await exec.exec(`git push`)
+      // await exec.exec(`git push --tags`)
+    }
 
     core.endGroup()
     core.setOutput('synced', true)
