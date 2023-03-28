@@ -1,10 +1,8 @@
 import * as core from '@actions/core'
-import * as github from '@actions/github'
 import * as exec from '@actions/exec'
 import * as io from '@actions/io'
 import * as glob from '@actions/glob'
 import {getRemoteVersion, getLocalVersion} from './helpers'
-import {env} from 'process'
 import {gt} from 'semver'
 
 const remoteRepoDirName = '__remote__source__'
@@ -12,13 +10,6 @@ const remoteRepoDirName = '__remote__source__'
 async function run(): Promise<void> {
   try {
     const source: string = core.getInput('source')
-    const githubToken = env['ACTIONS_RUNTIME_TOKEN'] as string
-    const octokit = github.getOctokit(githubToken)
-    // for (const [key, value] of Object.entries(env)) {
-    //   core.info(`${key}: ${value}`)
-    // }
-
-    core.info(`${octokit}, ${source}`)
 
     // 0. Clone current repo
     // uses: actions/checkout@v3

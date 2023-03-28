@@ -1,0 +1,26 @@
+name: Tag a new version
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - master
+
+jobs:
+  tagging:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Get version from the latest commit
+      id: version
+      run: |
+        echo "VERSION=$(git log --pretty=format:%s | head -n 1 | grep -oP 'Version: (v?\d+\.\d+\.\d+)' | awk '{print $2}')" >> $GITHUB_ENV
+
+    - name: Add tag if needed
+      if: env.VERSION != ''
+      run: |
+        git tag ${{ env.VERSION }}
+        git push --tags

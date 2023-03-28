@@ -1,0 +1,31 @@
+name: Sync From Remote Repo
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * SUN'
+
+# Set remote repo URL to track
+env:
+  REPO: <URL>
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dev4dev/sync-from-remote-action@v1.0.4
+        id: sync
+        with:
+          source: ${{ env.REPO }}
+      - name: Print result
+        run: |
+          echo ${{ steps.sync.outputs.synced }}
+      - name: Create Pull Request
+        if: ${{ steps.sync.outputs.synced }}
+        uses: peter-evans/create-pull-request@v4
+        with:
+          commit-message: "[auto update] Version: ${{ steps.sync.outputs.version }}"
+          title: "[auto update] Version: ${{ steps.sync.outputs.version }}"
+          branch: "version/${{ steps.sync.outputs.version }}"
+          reviewers: dev4dev
