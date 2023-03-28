@@ -123,6 +123,7 @@ async function run(): Promise<void> {
 
     core.endGroup()
     core.setOutput('synced', true)
+    core.setOutput('version', remoteVersion.format())
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }
