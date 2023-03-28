@@ -104,7 +104,7 @@ async function run(): Promise<void> {
 
     // git add --all && git commit with version name && git push
     await exec.exec(`git add --all`)
-    await exec.exec(`git commot -m "${remoteVersion.format()}"`)
+    await exec.exec(`git commit -m "${remoteVersion.format()}"`)
     if (testing) {
       core.info((await exec.getExecOutput(`git status`)).stdout)
       core.info('> git push')

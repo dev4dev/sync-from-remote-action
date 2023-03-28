@@ -216,7 +216,7 @@ function run() {
             core.info(`local content ${(yield exec.getExecOutput(`ls -ahl`)).stdout}`);
             // git add --all && git commit with version name && git push
             yield exec.exec(`git add --all`);
-            yield exec.exec(`git commot -m "${remoteVersion.format()}"`);
+            yield exec.exec(`git commit -m "${remoteVersion.format()}"`);
             if (testing) {
                 core.info((yield exec.getExecOutput(`git status`)).stdout);
                 core.info('> git push');
