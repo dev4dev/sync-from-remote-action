@@ -60,25 +60,35 @@ async function run(): Promise<void> {
       const hidden = parts.pop()?.startsWith('.') ?? false
       return !hidden
     })
+
+    core.info('Removing local stuff...')
     for (const file of visibleLocal) {
+      core.info(`Deleting ${file}...`)
       await io.rmRF(file)
     }
 
-    // // Clone remote repo
-    // await exec.exec(`git clone ${source} ${remoteRepoDirName}`)
-    // const rls = await exec.getExecOutput(`ls -ahl`, [], {
-    //   cwd: remoteRepoDirName
-    // })
-    // core.info(`remote content ${rls.stdout}`)
-
-    // // check local content
+    // check local content
     core.info(`local content ${(await exec.getExecOutput(`ls -ahl`)).stdout}`)
 
-    // list remove non hidden files (glob)
-    // const remoteItems = await glob.create('*')
-    // for await (const file of remoteItems.globGenerator()) {
-    //   core.info(`remote > ${file}`)
-    // }
+    // Clone remote repo
+    await exec.exec(`git clone ${source} ${remoteRepoDirName}`)
+    const rls = await exec.getExecOutput(`ls -ahl`, [], {
+      cwd: remoteRepoDirName
+    })
+    core.info(`remote content ${rls.stdout}`)
+
+    const remoteItems = await glob.create(`./${remoteRepoDirName}/*`, {
+      implicitDescendants: false
+    })
+    const allRemote = await remoteItems.glob()
+    const visibleRemote = allRemote.filter(file => {
+      const parts = file.split('/')
+      const hidden = parts.pop()?.startsWith('.') ?? false
+      return !hidden
+    })
+    for (const file of visibleRemote) {
+      core.info(`remote > ${file}`)
+    }
 
     // delete all hidden files
     // await io.rmRF(`./${remoteRepoDirName}/.*`)

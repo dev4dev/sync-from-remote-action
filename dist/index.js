@@ -178,22 +178,32 @@ function run() {
                 const hidden = (_b = (_a = parts.pop()) === null || _a === void 0 ? void 0 : _a.startsWith('.')) !== null && _b !== void 0 ? _b : false;
                 return !hidden;
             });
+            core.info('Removing local stuff...');
             for (const file of visibleLocal) {
+                core.info(`Deleting ${file}...`);
                 yield io.rmRF(file);
             }
-            // // Clone remote repo
-            // await exec.exec(`git clone ${source} ${remoteRepoDirName}`)
-            // const rls = await exec.getExecOutput(`ls -ahl`, [], {
-            //   cwd: remoteRepoDirName
-            // })
-            // core.info(`remote content ${rls.stdout}`)
-            // // check local content
+            // check local content
             core.info(`local content ${(yield exec.getExecOutput(`ls -ahl`)).stdout}`);
-            // list remove non hidden files (glob)
-            // const remoteItems = await glob.create('*')
-            // for await (const file of remoteItems.globGenerator()) {
-            //   core.info(`remote > ${file}`)
-            // }
+            // Clone remote repo
+            yield exec.exec(`git clone ${source} ${remoteRepoDirName}`);
+            const rls = yield exec.getExecOutput(`ls -ahl`, [], {
+                cwd: remoteRepoDirName
+            });
+            core.info(`remote content ${rls.stdout}`);
+            const remoteItems = yield glob.create(`./${remoteRepoDirName}/*`, {
+                implicitDescendants: false
+            });
+            const allRemote = yield remoteItems.glob();
+            const visibleRemote = allRemote.filter(file => {
+                var _a, _b;
+                const parts = file.split('/');
+                const hidden = (_b = (_a = parts.pop()) === null || _a === void 0 ? void 0 : _a.startsWith('.')) !== null && _b !== void 0 ? _b : false;
+                return !hidden;
+            });
+            for (const file of visibleRemote) {
+                core.info(`remote > ${file}`);
+            }
             // delete all hidden files
             // await io.rmRF(`./${remoteRepoDirName}/.*`)
             // // Copy remote nonhidden files (??)
