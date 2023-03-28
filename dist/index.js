@@ -191,6 +191,7 @@ function run() {
                 cwd: remoteRepoDirName
             });
             core.info(`remote content ${rls.stdout}`);
+            // Copy remote files
             const remoteItems = yield glob.create(`./${remoteRepoDirName}/*`, {
                 implicitDescendants: false
             });
@@ -201,16 +202,16 @@ function run() {
                 const hidden = (_b = (_a = parts.pop()) === null || _a === void 0 ? void 0 : _a.startsWith('.')) !== null && _b !== void 0 ? _b : false;
                 return !hidden;
             });
+            core.info('Copying remote files...');
             for (const file of visibleRemote) {
-                core.info(`remote > ${file}`);
+                core.info(`Copying ${file}...`);
+                yield io.cp(file, './', {
+                    recursive: true,
+                    force: true
+                });
             }
-            // delete all hidden files
-            // await io.rmRF(`./${remoteRepoDirName}/.*`)
-            // // Copy remote nonhidden files (??)
-            // await io.cp(`./${remoteRepoDirName}`, './', {
-            //   recursive: true,
-            //   force: true
-            // })
+            // check local content
+            core.info(`local content ${(yield exec.getExecOutput(`ls -ahl`)).stdout}`);
             // // Delete parent repo
             // await io.rmRF(`./${remoteRepoDirName}`)
             // // git add --all && git commit with version name && git push

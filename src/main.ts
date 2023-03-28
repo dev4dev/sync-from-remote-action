@@ -77,6 +77,7 @@ async function run(): Promise<void> {
     })
     core.info(`remote content ${rls.stdout}`)
 
+    // Copy remote files
     const remoteItems = await glob.create(`./${remoteRepoDirName}/*`, {
       implicitDescendants: false
     })
@@ -86,18 +87,17 @@ async function run(): Promise<void> {
       const hidden = parts.pop()?.startsWith('.') ?? false
       return !hidden
     })
+    core.info('Copying remote files...')
     for (const file of visibleRemote) {
-      core.info(`remote > ${file}`)
+      core.info(`Copying ${file}...`)
+      await io.cp(file, './', {
+        recursive: true,
+        force: true
+      })
     }
 
-    // delete all hidden files
-    // await io.rmRF(`./${remoteRepoDirName}/.*`)
-
-    // // Copy remote nonhidden files (??)
-    // await io.cp(`./${remoteRepoDirName}`, './', {
-    //   recursive: true,
-    //   force: true
-    // })
+    // check local content
+    core.info(`local content ${(await exec.getExecOutput(`ls -ahl`)).stdout}`)
 
     // // Delete parent repo
     // await io.rmRF(`./${remoteRepoDirName}`)
