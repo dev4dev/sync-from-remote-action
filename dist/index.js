@@ -214,6 +214,11 @@ function run() {
             yield io.rmRF(`./${remoteRepoDirName}`);
             // check local content
             core.info(`local content ${(yield exec.getExecOutput(`ls -ahl`)).stdout}`);
+            // setup git
+            const gitEmail = core.getInput('gitEmail');
+            const gitName = core.getInput('gitName');
+            yield exec.exec(`git config --global user.email "${gitEmail}"`);
+            yield exec.exec(`git config --global user.name "${gitName}"`);
             // git add --all && git commit with version name && git push
             yield exec.exec(`git add --all`);
             yield exec.exec(`git commit -m "${remoteVersion.format()}"`);

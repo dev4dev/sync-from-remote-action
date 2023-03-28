@@ -24,6 +24,8 @@ jobs:
         id: sync
         with:
           source: 'https://github.com/dev4dev/ParentTestSDK'
+          gitName: 'Alex A'
+          gitEmail: 'test@x-code.name'
       - name: Print result
         run: |
           echo ${{ steps.sync.outputs.result }}

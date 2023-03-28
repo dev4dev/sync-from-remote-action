@@ -102,6 +102,12 @@ async function run(): Promise<void> {
     // check local content
     core.info(`local content ${(await exec.getExecOutput(`ls -ahl`)).stdout}`)
 
+    // setup git
+    const gitEmail: string = core.getInput('gitEmail')
+    const gitName: string = core.getInput('gitName')
+    await exec.exec(`git config --global user.email "${gitEmail}"`)
+    await exec.exec(`git config --global user.name "${gitName}"`)
+
     // git add --all && git commit with version name && git push
     await exec.exec(`git add --all`)
     await exec.exec(`git commit -m "${remoteVersion.format()}"`)

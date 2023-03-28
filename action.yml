@@ -5,6 +5,15 @@ inputs:
   source:
     required: true
     description: 'Source repo'
+  gitName:
+    required: true
+    description: 'Git user name used to commit changes'
+    default: 'Github Action'
+  gitEmail:
+    required: true
+    description: 'Git user email used to commit changes'
+    default: 'email@placeholder.com'
+
 runs:
   using: 'node16'
   main: 'dist/index.js'
