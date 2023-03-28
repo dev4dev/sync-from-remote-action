@@ -5,9 +5,9 @@ on:
   schedule:
     - cron: '0 0 * * SUN'
 
-# Set remote repo URL to track
 env:
-  REPO: <URL>
+  REPO: <URL> # Set remote repo URL to track
+  REVIEWERS: <comma,separated,list> # Set a list of reviewers
 
 jobs:
   sync:
@@ -28,4 +28,4 @@ jobs:
           commit-message: "[auto update] Version: ${{ steps.sync.outputs.version }}"
           title: "[auto update] Version: ${{ steps.sync.outputs.version }}"
           branch: "version/${{ steps.sync.outputs.version }}"
-          reviewers: dev4dev
+          reviewers: ${{ env.REVIEWERS }}

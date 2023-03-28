@@ -16,5 +16,5 @@ Just some magic
 4. Add two workflows from `wf` directory
     - The first one is checking remote repo and creates a new PR with changes to the latest version
     - The second one creates a new tag if the version PR was merged
-    - Update remote repo url in `sync.yml` action
-    - Adjust cron schedule in `sync.yml` action
+    - Update remote repo url and list of reviewers in `sync.yml` action
+    - Adjust cron schedule and main branch name (if needed) in `on` section in `sync.yml` action
