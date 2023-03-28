@@ -64,10 +64,10 @@ async function run(): Promise<void> {
     core.info(`local content ${(await exec.getExecOutput(`ls -ahl`)).stdout}`)
 
     // list remove non hidden files (glob)
-    const remoteItems = await glob.create('*')
-    for await (const file of remoteItems.globGenerator()) {
-      core.info(`remote > ${file}`)
-    }
+    // const remoteItems = await glob.create('*')
+    // for await (const file of remoteItems.globGenerator()) {
+    //   core.info(`remote > ${file}`)
+    // }
 
     // delete all hidden files
     // await io.rmRF(`./${remoteRepoDirName}/.*`)
