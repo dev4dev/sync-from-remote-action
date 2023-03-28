@@ -61,10 +61,8 @@ async function run(): Promise<void> {
       return !hidden
     })
     for (const file of visibleLocal) {
-      core.info(`local > ${file}`)
+      await io.rmRF(file)
     }
-
-    await io.rmRF('*')
 
     // // Clone remote repo
     // await exec.exec(`git clone ${source} ${remoteRepoDirName}`)

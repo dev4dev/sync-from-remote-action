@@ -179,9 +179,8 @@ function run() {
                 return !hidden;
             });
             for (const file of visibleLocal) {
-                core.info(`local > ${file}`);
+                yield io.rmRF(file);
             }
-            yield io.rmRF('*');
             // // Clone remote repo
             // await exec.exec(`git clone ${source} ${remoteRepoDirName}`)
             // const rls = await exec.getExecOutput(`ls -ahl`, [], {
