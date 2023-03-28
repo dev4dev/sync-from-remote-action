@@ -222,8 +222,10 @@ function run() {
             // git add --all && git commit with version name && git push
             yield exec.exec(`git add --all`);
             yield exec.exec(`git commit -m "${remoteVersion.format()}"`);
+            yield exec.exec(`git tag ${remoteVersion.format()}`);
             if (testing) {
                 core.info((yield exec.getExecOutput(`git status`)).stdout);
+                core.info((yield exec.getExecOutput(`git log --format=oneline`)).stdout);
                 core.info('> git push');
             }
             else {
