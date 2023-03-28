@@ -75,7 +75,7 @@ function extractVersionFromLogs(logs) {
         .shift();
     if (matched) {
         const version = (_c = (_b = (_a = matched.split(new RegExp('\\s'))) === null || _a === void 0 ? void 0 : _a.pop()) === null || _b === void 0 ? void 0 : _b.split('/')) === null || _c === void 0 ? void 0 : _c.pop();
-        const tag = (_d = matched.split(' ').shift()) !== null && _d !== void 0 ? _d : '';
+        const tag = (_d = matched.split('\t').shift()) !== null && _d !== void 0 ? _d : '';
         return {
             version: new semver_1.SemVer(version !== null && version !== void 0 ? version : '0.0.0'),
             tag
