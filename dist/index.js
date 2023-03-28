@@ -229,8 +229,8 @@ function run() {
                 core.info('> git push');
             }
             else {
-                // await exec.exec(`git push`)
-                // await exec.exec(`git push --tags`)
+                yield exec.exec(`git push`);
+                yield exec.exec(`git push --tags`);
             }
             core.endGroup();
             core.setOutput('synced', true);

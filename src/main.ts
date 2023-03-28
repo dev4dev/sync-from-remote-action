@@ -117,8 +117,8 @@ async function run(): Promise<void> {
       core.info((await exec.getExecOutput(`git log --format=oneline`)).stdout)
       core.info('> git push')
     } else {
-      // await exec.exec(`git push`)
-      // await exec.exec(`git push --tags`)
+      await exec.exec(`git push`)
+      await exec.exec(`git push --tags`)
     }
 
     core.endGroup()
