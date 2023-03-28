@@ -51,10 +51,11 @@ async function run(): Promise<void> {
     // SYNC IF NEEDED
 
     // Delete nonhidden local files (??)
-    const remoteItems = await glob.create('*')
-    for await (const file of remoteItems.globGenerator()) {
-      core.info(`local > ${file}`)
-    }
+    const remoteItems = await glob.create('*', {
+      implicitDescendants: false
+    })
+    const files = await remoteItems.glob()
+    core.info(`local > ${files}`)
     // await io.rmRF('*')
 
     // // Clone remote repo
