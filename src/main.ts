@@ -2,6 +2,7 @@ import * as core from '@actions/core'
 import * as github from '@actions/github'
 import * as exec from '@actions/exec'
 import * as io from '@actions/io'
+import * as glob from '@actions/glob'
 import {getRemoteVersion, getLocalVersion} from './helpers'
 import {env} from 'process'
 import {gt} from 'semver'
@@ -62,27 +63,33 @@ async function run(): Promise<void> {
     // check local content
     core.info(`local content ${(await exec.getExecOutput(`ls -ahl`)).stdout}`)
 
-    // delete all hidden files
-    await io.rmRF(`./${remoteRepoDirName}/.*`)
-
-    // Copy remote nonhidden files (??)
-    await io.cp(`./${remoteRepoDirName}`, './', {
-      recursive: true,
-      force: true
-    })
-
-    // Delete parent repo
-    await io.rmRF(`./${remoteRepoDirName}`)
-
-    // git add --all && git commit with version name && git push
-    await exec.exec(`git add --all`)
-    await exec.exec(`git commot -m "${remoteVersion.format()}"`)
-    if (testing) {
-      core.info((await exec.getExecOutput(`git status`)).stdout)
-      core.info('> git push')
-    } else {
-      await exec.exec(`git push`)
+    // list remove non hidden files (glob)
+    const remoteItems = await glob.create('*')
+    for await (const file of remoteItems.globGenerator()) {
+      core.info(`remote > ${file}`)
     }
+
+    // delete all hidden files
+    // await io.rmRF(`./${remoteRepoDirName}/.*`)
+
+    // // Copy remote nonhidden files (??)
+    // await io.cp(`./${remoteRepoDirName}`, './', {
+    //   recursive: true,
+    //   force: true
+    // })
+
+    // // Delete parent repo
+    // await io.rmRF(`./${remoteRepoDirName}`)
+
+    // // git add --all && git commit with version name && git push
+    // await exec.exec(`git add --all`)
+    // await exec.exec(`git commot -m "${remoteVersion.format()}"`)
+    // if (testing) {
+    //   core.info((await exec.getExecOutput(`git status`)).stdout)
+    //   core.info('> git push')
+    // } else {
+    //   await exec.exec(`git push`)
+    // }
 
     core.endGroup()
     core.setOutput('synced', true)
