@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: dev4dev/sync-from-remote-action@v1.0.4
+      - uses: dev4dev/sync-from-remote-action@v1.0.6
         id: sync
         with:
           source: ${{ env.REPO }}
@@ -22,7 +22,7 @@ jobs:
         run: |
           echo ${{ steps.sync.outputs.synced }}
       - name: Create Pull Request
-        if: ${{ steps.sync.outputs.synced }}
+        if: steps.sync.outputs.synced == true
         uses: peter-evans/create-pull-request@v4
         with:
           commit-message: "[auto update] Version: ${{ steps.sync.outputs.version }}"
