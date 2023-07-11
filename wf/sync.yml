@@ -3,7 +3,7 @@ name: Sync From Remote Repo
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 0 * * SUN'
+    - cron: '0 0 1/2 * *'
 
 env:
   REPO: <URL> # Set remote repo URL to track
