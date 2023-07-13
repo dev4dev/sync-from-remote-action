@@ -22,7 +22,7 @@ jobs:
         run: |
           echo ${{ steps.sync.outputs.synced }}
       - name: Create Pull Request
-        if: ${{ steps.sync.outputs.synced }}
+        if: ${{ steps.sync.outputs.synced == 'true' }}
         uses: peter-evans/create-pull-request@v4
         with:
           commit-message: "[auto update] Version: ${{ steps.sync.outputs.version }}"
