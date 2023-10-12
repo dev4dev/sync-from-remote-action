@@ -17,33 +17,37 @@ export async function getRemoteVersion(repo: string): Promise<VersionDetails> {
 }
 
 export async function getLocalVersion(): Promise<SemVer> {
-  // const output = await execPromise(`git tag --sort="-v:refname"`)
-  // const versions = output.split('\n')
-
-  // return extractVersionFromLogs(versions).version
   const url = await execPromise(`git remote get-url origin`)
   return (await getRemoteVersion(url)).version
 }
 
 function extractVersionFromLogs(logs: string[]): VersionDetails {
   const matched = logs
-    .filter(line => {
+    .flatMap(line => {
       const match = line.match(new RegExp('refs/tags/v?\\d+.\\d+.\\d+$'))
       if (match) {
-        return (match.index ?? 0) > 0
+        return match
       } else {
-        return false
+        return null
       }
     })
-    .shift()
+    .flatMap(x => (x ? [x] : []))
+    .map(line => {
+      const version = line.split(new RegExp('\\s'))?.pop()?.split('/')?.pop()
+      const tag = line.split('\t').shift() ?? ''
+      return {
+        version: new SemVer(version ?? '0.0.0'),
+        tag
+      } as VersionDetails
+    })
+    .sort((lhs, rhs) => {
+      return lhs.version.compare(rhs.version)
+    })
 
-  if (matched) {
-    const version = matched.split(new RegExp('\\s'))?.pop()?.split('/')?.pop()
-    const tag = matched.split('\t').shift() ?? ''
-    return {
-      version: new SemVer(version ?? '0.0.0'),
-      tag
-    }
+  const result = matched.pop()
+
+  if (result) {
+    return result
   } else {
     return {
       version: new SemVer('0.0.0'),

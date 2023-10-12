@@ -53,35 +53,38 @@ function getRemoteVersion(repo) {
 exports.getRemoteVersion = getRemoteVersion;
 function getLocalVersion() {
     return __awaiter(this, void 0, void 0, function* () {
-        // const output = await execPromise(`git tag --sort="-v:refname"`)
-        // const versions = output.split('\n')
-        // return extractVersionFromLogs(versions).version
         const url = yield execPromise(`git remote get-url origin`);
         return (yield getRemoteVersion(url)).version;
     });
 }
 exports.getLocalVersion = getLocalVersion;
 function extractVersionFromLogs(logs) {
-    var _a, _b, _c, _d;
     const matched = logs
-        .filter(line => {
-        var _a;
+        .flatMap(line => {
         const match = line.match(new RegExp('refs/tags/v?\\d+.\\d+.\\d+$'));
         if (match) {
-            return ((_a = match.index) !== null && _a !== void 0 ? _a : 0) > 0;
+            return match;
         }
         else {
-            return false;
+            return null;
         }
     })
-        .shift();
-    if (matched) {
-        const version = (_c = (_b = (_a = matched.split(new RegExp('\\s'))) === null || _a === void 0 ? void 0 : _a.pop()) === null || _b === void 0 ? void 0 : _b.split('/')) === null || _c === void 0 ? void 0 : _c.pop();
-        const tag = (_d = matched.split('\t').shift()) !== null && _d !== void 0 ? _d : '';
+        .flatMap(x => (x ? [x] : []))
+        .map(line => {
+        var _a, _b, _c, _d;
+        const version = (_c = (_b = (_a = line.split(new RegExp('\\s'))) === null || _a === void 0 ? void 0 : _a.pop()) === null || _b === void 0 ? void 0 : _b.split('/')) === null || _c === void 0 ? void 0 : _c.pop();
+        const tag = (_d = line.split('\t').shift()) !== null && _d !== void 0 ? _d : '';
         return {
             version: new semver_1.SemVer(version !== null && version !== void 0 ? version : '0.0.0'),
             tag
         };
+    })
+        .sort((lhs, rhs) => {
+        return lhs.version.compare(rhs.version);
+    });
+    const result = matched.pop();
+    if (result) {
+        return result;
     }
     else {
         return {
