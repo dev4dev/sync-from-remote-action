@@ -1,6 +1,7 @@
 name: 'Sync from the Remote repo action'
 description: 'Allows to keep a separate shallow repo with the code from the remote repo'
-author: 'Sponge Bob'
+author: 'Alex Antonyuk'
+
 inputs:
   source:
     required: true
@@ -10,5 +11,5 @@ inputs:
     description: 'List of excluded items from sync'
 
 runs:
-  using: 'node16'
-  main: 'dist/index.js'
+  using: node20
+  main: dist/index.js
