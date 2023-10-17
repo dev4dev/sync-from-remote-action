@@ -76,13 +76,24 @@ async function run(): Promise<void> {
       const hidden = parts.pop()?.startsWith('.') ?? false
       return !hidden
     })
+
+    const exclude: string[] = core
+      .getInput('exclude')
+      .split('\n')
+      .map(x => x.toLowerCase())
+
     core.info('Copying remote files...')
     for (const file of visibleRemote) {
-      core.info(`Copying ${file}...`)
-      await io.cp(file, './', {
-        recursive: true,
-        force: true
-      })
+      const name = file.split('/').pop()?.toLowerCase()
+      if (name && exclude.includes(name)) {
+        core.info(`Skipping ${file}...`)
+      } else {
+        core.info(`Copying ${file}...`)
+        await io.cp(file, './', {
+          recursive: true,
+          force: true
+        })
+      }
     }
 
     // Delete parent repo
