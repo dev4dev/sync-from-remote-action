@@ -5,6 +5,9 @@ inputs:
   source:
     required: true
     description: 'Source repo'
+  exclude:
+    required: true
+    description: 'List of excluded items from sync'
 
 runs:
   using: 'node16'
