@@ -150,6 +150,7 @@ const helpers_1 = __nccwpck_require__(5008);
 const semver_1 = __nccwpck_require__(1383);
 const remoteRepoDirName = '__remote__source__';
 function run() {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const source = core.getInput('source');
@@ -210,13 +211,23 @@ function run() {
                 const hidden = (_b = (_a = parts.pop()) === null || _a === void 0 ? void 0 : _a.startsWith('.')) !== null && _b !== void 0 ? _b : false;
                 return !hidden;
             });
+            const exclude = core
+                .getInput('exclude')
+                .split('\n')
+                .map(x => x.toLowerCase());
             core.info('Copying remote files...');
             for (const file of visibleRemote) {
-                core.info(`Copying ${file}...`);
-                yield io.cp(file, './', {
-                    recursive: true,
-                    force: true
-                });
+                const name = (_a = file.split('/').pop()) === null || _a === void 0 ? void 0 : _a.toLowerCase();
+                if (name && exclude.includes(name)) {
+                    core.info(`Skipping ${file}...`);
+                }
+                else {
+                    core.info(`Copying ${file}...`);
+                    yield io.cp(file, './', {
+                        recursive: true,
+                        force: true
+                    });
+                }
             }
             // Delete parent repo
             yield io.rmRF(`./${remoteRepoDirName}`);
